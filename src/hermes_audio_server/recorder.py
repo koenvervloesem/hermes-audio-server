@@ -69,6 +69,7 @@ class AudioRecorder:
             frames = stream.read(CHUNK, exception_on_overflow=False)
             with io.BytesIO() as wav_buffer:
                 with wave.open(wav_buffer, 'wb') as wav:
+                    # pylint: disable=no-member
                     wav.setnchannels(CHANNELS)
                     wav.setsampwidth(SAMPLE_WIDTH)
                     wav.setframerate(FRAME_RATE)

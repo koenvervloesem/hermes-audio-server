@@ -16,4 +16,4 @@ install:
   - pip3 install -r requirements.txt
 
 script:
-  - pylint -E src/hermes-audio-server/*.py
+  - pylint -E src/hermes_audio_server/*.py
