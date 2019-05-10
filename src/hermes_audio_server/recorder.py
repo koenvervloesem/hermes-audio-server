@@ -66,16 +66,12 @@ class AudioRecorder:
               ' on site {}'.format(self.audio_in, self.config.site))
 
         while True:
-            try:
-                frames = stream.read(CHUNK)
-                with io.BytesIO() as wav_buffer:
-                    with wave.open(wav_buffer, 'wb') as wav:
-                        wav.setnchannels(CHANNELS)
-                        wav.setsampwidth(SAMPLE_WIDTH)
-                        wav.setframerate(FRAME_RATE)
-                        wav.writeframes(frames)
-                    self.mqtt.publish(AUDIO_FRAME.format(self.config.site),
-                                      wav_buffer.getvalue())
-            except OSError:
-                if self.verbose:
-                    print('Warning: input overflowed')
+            frames = stream.read(CHUNK, exception_on_overflow=False)
+            with io.BytesIO() as wav_buffer:
+                with wave.open(wav_buffer, 'wb') as wav:
+                    wav.setnchannels(CHANNELS)
+                    wav.setsampwidth(SAMPLE_WIDTH)
+                    wav.setframerate(FRAME_RATE)
+                    wav.writeframes(frames)
+                self.mqtt.publish(AUDIO_FRAME.format(self.config.site),
+                                  wav_buffer.getvalue())

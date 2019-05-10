@@ -49,8 +49,8 @@ class AudioPlayer:
     def on_connect(self, client, userdata, flags, result_code):
         print('Connected to MQTT broker {}:{}'
               ' with result code {}.'.format(self.config.mqtt.host,
-                                            self.config.mqtt.port,
-                                            result_code))
+                                             self.config.mqtt.port,
+                                             result_code))
 
         play_bytes = PLAY_BYTES.format(self.config.site)
         self.mqtt.subscribe(play_bytes)
