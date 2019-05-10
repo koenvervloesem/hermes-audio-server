@@ -6,6 +6,11 @@ python:
   - 3.6
   - 3.7
 
+addons:
+  apt:
+    packages:
+      - portaudio19-dev
+
 install:
   - pip3 install pylint
   - pip3 install -r requirements.txt
