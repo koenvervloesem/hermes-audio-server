@@ -44,7 +44,7 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
 }
 ```
 
-All keys are optional. The default behaviour is to connect with localhost:1883 without authentication and TLS.
+All keys are optional. The default behaviour is to connect with localhost:1883 without authentication and TLS and to use default as the site ID.
 
 Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
 
