@@ -7,7 +7,7 @@ from humanfriendly import format_size
 from paho.mqtt.client import Client
 import pyaudio
 
-from mqtt import connect
+from hermes_audio_server.mqtt import connect
 
 PLAY_BYTES = 'hermes/audioServer/{}/playBytes/+'
 PLAY_FINISHED = 'hermes/audioServer/{}/playFinished'

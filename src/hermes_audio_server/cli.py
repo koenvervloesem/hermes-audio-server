@@ -4,10 +4,10 @@ hermes-audio-player and hermes-audio-recorder.
 import sys
 import traceback
 
-from __about__ import __version__
-from config import ServerConfig, DEFAULT_CONFIG
-from player import AudioPlayer
-from recorder import AudioRecorder
+from hermes_audio_server.__about__ import __version__
+from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
+from hermes_audio_server.player import AudioPlayer
+from hermes_audio_server.recorder import AudioRecorder
 
 
 def main(command, verbose, version, config):
