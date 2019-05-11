@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 import plac
 
-from __about__ import __recorder__
-import cli
-from config import DEFAULT_CONFIG
+from hermes_audio_server.__about__ import __recorder__
+from hermes_audio_server import cli
+from hermes_audio_server.config import DEFAULT_CONFIG
 
 
 def main(verbose: ('use verbose output', 'flag', 'v'),

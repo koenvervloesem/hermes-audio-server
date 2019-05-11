@@ -6,7 +6,7 @@ import wave
 from paho.mqtt.client import Client
 import pyaudio
 
-from mqtt import connect
+from hermes_audio_server.mqtt import connect
 
 AUDIO_FRAME = 'hermes/audioServer/{}/audioFrame'
 CHANNELS = 1

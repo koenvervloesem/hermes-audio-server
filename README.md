@@ -18,10 +18,8 @@ You can install the dependencies like this:
 
 ```shell
 sudo apt install portaudio19-dev
-pip3 install -r requirements.txt
+pip3 install hermes-audio-server 
 ```
-
-There's currently no installation script for Hermes Audio Server yet. This will be added in the next version.
 
 ## Configuration
 
@@ -57,13 +55,13 @@ Hermes Audio Server consists of two commands: Hermes Audio Player that receives 
 You can run the Hermes Audio Player like this:
 
 ```shell
-python3 src/hermes_audio_server/hermes_audio_player.py
+hermes-audio-player
 ```
 
 You can run the Hermes Audio Recorder like this:
 
 ```shell
-python3 src/hermes_audio_server/hermes_audio_recorder.py
+hermes-audio-recorder
 ```
 
 You can run both, or only one of them if you only want to use the speaker or microphone.
@@ -73,7 +71,7 @@ You can run both, or only one of them if you only want to use the speaker or mic
 Both commands know the `--help` option that gives you more information about the recognized options. For instance:
 
 ```shell
-usage: hermes_audio_player.py [-h] [-v] [-V] [-c CONFIG]
+usage: hermes-audio-player [-h] [-v] [-V] [-c CONFIG]
 
 hermes-audio-player is an audio server implementing the playback part of
     the Hermes protocol.
@@ -91,7 +89,6 @@ optional arguments:
 
 The following features will be developed soon:
 
-*   Create an installer
 *   Add logging
 *   Make it possible to run the commands as daemons (and add systemd unit files)
 *   Add an option to let the user choose the audio devices
