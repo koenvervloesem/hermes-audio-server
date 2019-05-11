@@ -27,20 +27,20 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
 
 ```json
 {
-	"site": "default",
-	"mqtt": {
-		"host": "localhost",
-		"port": 1883,
-		"authentication": {
-			"username": "foobar",
-			"password": "secretpassword"
-		},
-		"tls": {
-			"ca_certificates": "",
-			"client_certificate": "",
-			"client_key": ""
-		}
-	}
+    "site": "default",
+    "mqtt": {
+        "host": "localhost",
+        "port": 1883,
+        "authentication": {
+            "username": "foobar",
+            "password": "secretpassword"
+        },
+        "tls": {
+            "ca_certificates": "",
+            "client_certificate": "",
+            "client_key": ""
+        }
+    }
 }
 ```
 
