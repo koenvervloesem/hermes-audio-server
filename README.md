@@ -103,6 +103,7 @@ If you find Hermes Audio Server interesting, also have a look at the following p
 
 *   [Rhasspy](https://rhasspy.readthedocs.io): An offline, multilingual voice assistant toolkit that works with [Home Assistant](https://www.home-assistant.io) and is completely open source.
 *   [Matrix-Voice-ESP32-MQTT-Audio-Streamer](https://github.com/Romkabouter/Matrix-Voice-ESP32-MQTT-Audio-Streamer): The equivalent of Hermes Audio Server for a Matrix Voice ESP32 board, including LED control and OTA updates.
+*   [OpenSnips](https://github.com/syntithenai/opensnips): A collection of open source projects related to the Snips voice platform.
 
 ## License
 
