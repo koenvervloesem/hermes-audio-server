@@ -14,7 +14,7 @@ Hermes Audio Server requires Python 3. It has been tested on a Raspberry Pi runn
 
 ## Installation
 
-You can install the dependencies like this:
+You can install Hermes Audio Server and its dependencies like this:
 
 ```shell
 sudo apt install portaudio19-dev
