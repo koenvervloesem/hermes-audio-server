@@ -1,14 +1,10 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
+import about
 
 SRC_ROOT = 'src'
 BIN_ROOT = 'bin/'
-
-# Read some information about the project from __about__.py
-with (Path(SRC_ROOT) / 'hermes_audio_server' / '__about__.py').open('r') as fh:
-    about = dict()
-    exec(fh.read(), about)
 
 with Path('README.md').open('r') as fh:
     long_description = fh.read()
@@ -18,22 +14,22 @@ with Path('requirements.txt').open('r') as fh:
     requirements = [requirement for requirement in requirements
                     if not requirement.startswith('#')]
 
-binaries = [BIN_ROOT + about['__player__'], BIN_ROOT + about['__recorder__']]
+binaries = [BIN_ROOT + about.PLAYER, BIN_ROOT + about.RECORDER]
 
 setup(
-    name=about['__project__'],
-    version=about['__version__'],
-    description=about['__description__'],
+    name=about.PROJECT,
+    version=about.VERSION,
+    description=about.DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',
-    license=about['__license__'],
-    author=about['__author__'],
-    author_email=about['__email__'],
-    url=about['__github_url__'],
+    license=about.LICENSE,
+    author=about.AUTHOR,
+    author_email=about.EMAIL,
+    url=about.GITHUB_URL,
     project_urls={
-        'Documentation': about['__doc_url__'],
-        'Source': about['__github_url__'],
-        'Tracker': about['__tracker_url__'],
+        'Documentation': about.DOC_URL,
+        'Source': about.GITHUB_URL,
+        'Tracker': about.TRACKER_URL,
     },
     packages=find_packages(SRC_ROOT),
     package_dir={'': SRC_ROOT},
@@ -55,5 +51,5 @@ setup(
         'Topic :: Multimedia :: Sound/Audio :: Capture/Recording',
         'Topic :: Multimedia :: Sound/Audio :: Players'
     ],
-    keywords=about['__keywords__'],
+    keywords=about.KEYWORDS,
     scripts=binaries)

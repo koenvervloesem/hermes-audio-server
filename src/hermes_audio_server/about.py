@@ -1,0 +1,13 @@
+"""This module specifies some information about the package."""
+PROJECT = 'hermes-audio-server'
+DESCRIPTION = 'An open source implementation of the audio server part of the Hermes protocol'
+KEYWORDS = 'hermes snips python3 rhasspy audio-player audio-recorder audio-server snips-audio-server hermes-protocol voice voice-control'
+AUTHOR = 'Koen Vervloesem'
+EMAIL = 'koen@vervloesem.eu'
+LICENSE = 'MIT License'
+GITHUB_URL = 'https://github.com/koenvervloesem/hermes-audio-server'
+DOC_URL = 'https://github.com/koenvervloesem/hermes-audio-server'
+TRACKER_URL = 'https://github.com/koenvervloesem/hermes-audio-server/issues'
+PLAYER = 'hermes-audio-player'
+RECORDER = 'hermes-audio-recorder'
+VERSION = '0.0.2'

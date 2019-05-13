@@ -1,7 +1,7 @@
 """This module contains the main function run by the CLI commands
 hermes-audio-player and hermes-audio-recorder.
 """
-from hermes_audio_server.__about__ import __version__
+from hermes_audio_server.about import VERSION
 from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
 from hermes_audio_server.player import AudioPlayer
 from hermes_audio_server.recorder import AudioRecorder
@@ -19,7 +19,7 @@ def main(command, verbose, version, config):
         version (bool): Print version information and exit.
         config (str): Configuration file.
     """
-    print('{} {}'.format(command, __version__))
+    print('{} {}'.format(command, VERSION))
     try:
         if not version:
             if not config:
