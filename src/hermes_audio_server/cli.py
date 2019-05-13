@@ -9,6 +9,9 @@ from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
 from hermes_audio_server.player import AudioPlayer
 from hermes_audio_server.recorder import AudioRecorder
 
+SERVER = {'hermes-audio-player': AudioPlayer,
+          'hermes-audio-recorder': AudioRecorder}
+
 
 def main(command, verbose, version, config):
     """The main function run by the CLI command.
@@ -19,18 +22,14 @@ def main(command, verbose, version, config):
         version (bool): Print version information and exit.
         config (str): Configuration file.
     """
+    print('{} {}'.format(command, __version__))
     try:
-        print('{} {}'.format(command, __version__))
         if not version:
             if not config:
                 config = DEFAULT_CONFIG
 
-            if command == 'hermes-audio-player':
-                server = AudioPlayer(ServerConfig.from_json_file(config),
+            server = SERVER[command](ServerConfig.from_json_file(config),
                                      verbose)
-            elif command == 'hermes-audio-recorder':
-                server = AudioRecorder(ServerConfig.from_json_file(config),
-                                       verbose)
 
             server.start()
     except FileNotFoundError as not_found:
@@ -38,7 +37,3 @@ def main(command, verbose, version, config):
     except KeyboardInterrupt:
         print('Shutting down {}...'.format(command))
         server.audio.terminate()
-    except Exception:
-        traceback.print_exc(file=sys.stdout)
-
-    sys.exit(0)
