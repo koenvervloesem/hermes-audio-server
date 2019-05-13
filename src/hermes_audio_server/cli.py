@@ -1,9 +1,6 @@
 """This module contains the main function run by the CLI commands
 hermes-audio-player and hermes-audio-recorder.
 """
-import sys
-import traceback
-
 from hermes_audio_server.__about__ import __version__
 from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
 from hermes_audio_server.player import AudioPlayer
