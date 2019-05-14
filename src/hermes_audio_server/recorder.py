@@ -86,3 +86,5 @@ class AudioRecorder(MQTTClient):
                         self.mqtt.publish(VAD_DOWN.format(self.config.site),
                                           json.dumps({'siteId': self.config.site,
                                                       'signalMs': 0}))  # Not used
+            else:
+                self.publish_frames(frames)
