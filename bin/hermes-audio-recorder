@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import plac
 
-from hermes_audio_server.__about__ import __recorder__
+from hermes_audio_server.about import RECORDER
 from hermes_audio_server import cli
 from hermes_audio_server.config import DEFAULT_CONFIG
 
@@ -12,7 +12,7 @@ def main(verbose: ('use verbose output', 'flag', 'v'),
                   'option', 'c')):
     """hermes-audio-recorder is an audio server implementing the recording part
     of the Hermes protocol."""
-    cli.main(__recorder__, verbose, version, config)
+    cli.main(RECORDER, verbose, version, config)
 
 
 if __name__ == '__main__':
