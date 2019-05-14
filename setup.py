@@ -1,7 +1,7 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
-import about
+import hermes_audio_server.about
 
 SRC_ROOT = 'src'
 BIN_ROOT = 'bin/'
