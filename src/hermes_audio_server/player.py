@@ -27,7 +27,7 @@ class AudioPlayer(MQTTClient):
     def on_connect(self, client, userdata, flags, result_code):
         """Callback that is called when the audio player connects to the MQTT
         broker."""
-        super.on_connect(client, userdata, flags, result_code)
+        super(AudioPlayer, self).on_connect(client, userdata, flags, result_code)
         play_bytes = PLAY_BYTES.format(self.config.site)
         self.mqtt.subscribe(play_bytes)
         self.mqtt.message_callback_add(play_bytes, self.on_play_bytes)
