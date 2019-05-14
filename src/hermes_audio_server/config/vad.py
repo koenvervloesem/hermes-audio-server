@@ -63,4 +63,4 @@ class VADConfig:
             return cls(enabled=True,
                        mode=json_object.get(MODE, DEFAULT_MODE),
                        status_messages=json_object.get(STATUS_MESSAGES,
-                                                     DEFAULT_STATUS_MESSAGES))
+                                                       DEFAULT_STATUS_MESSAGES))
