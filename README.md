@@ -18,7 +18,7 @@ You can install Hermes Audio Server and its dependencies like this:
 
 ```shell
 sudo apt install portaudio19-dev
-sudo pip3 install hermes-audio-server 
+sudo pip3 install hermes-audio-server
 ```
 
 Note: this installs Hermes Audio Server globally. If you want to install Hermes Audio Server in a Python virtual environment, drop the `sudo`.
@@ -53,6 +53,9 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
 All keys are optional. The default behaviour is to connect with `localhost:1883` without authentication and TLS and to use `default` as the site ID.
 
 Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
+
+### Voice Activity Detection
+Voice Activity Detection is an experimental feature in Hermes Audio Server, which is disabled by default. It is based on [py-webrtcvad](https://github.com/wiseman/py-webrtcvad).
 
 If the `"vad"` key is not specified in the configuration file, Voice Activity Detection is not enabled and all recorded audio frames are streamed continuously on the network. If you don't want this, specify the `"vad"` key to only stream audio when voice activity is detected. You can configure the VAD feature with the following subkeys:
 
