@@ -2,11 +2,11 @@
 
 # Default values
 DEFAULT_MODE = 0
-DEFAULT_SEND_MESSAGES = False
+DEFAULT_STATUS_MESSAGES = False
 
 # Keys in the JSON configuration file
 MODE = 'mode'
-SEND_MESSAGES = 'send_messages'
+STATUS_MESSAGES = 'status_messages'
 
 
 # TODO: Define __str__() for each class with explicit settings for debugging.
@@ -17,18 +17,18 @@ class VADConfig:
         enabled (bool): Whether or not VAD is enabled.
         mode (int): Aggressiveness mode for VAD. 0 is the least aggressive
             about filtering out non-speech, 3 is the most aggressive.
-        send_messages (bool): Whether or not Hermes Audio Recorder sends
+        status_messages (bool): Whether or not Hermes Audio Recorder sends
              messages on MQTT when it detects the start or end of a voice
              message.
     """
 
-    def __init__(self, enabled=False, mode=0, send_messages=False):
+    def __init__(self, enabled=False, mode=0, status_messages=False):
         """Initialize a :class:`.VADConfig` object.
 
         Args:
             enabled (bool): Whether or not VAD is enabled. Defaults to False.
             mode (int): Aggressiveness mode for VAD. Defaults to 0.
-            send_messages (bool): Whether or not Hermes Audio Recorder sends
+            status_messages (bool): Whether or not Hermes Audio Recorder sends
                 messages on MQTT when it detects the start or end of a voice
                 message. Defaults to False.
 
@@ -36,7 +36,7 @@ class VADConfig:
         """
         self.enabled = enabled
         self.mode = mode
-        self.send_messages = send_messages
+        self.status_messages = status_messages
 
     @classmethod
     def from_json(cls, json_object=None):
@@ -54,7 +54,7 @@ class VADConfig:
 
         {
             "mode": 0,
-            "send_messages": true
+            "status_messages": true
         }
         """
         if json_object is None:
@@ -62,5 +62,5 @@ class VADConfig:
         else:
             return cls(enabled=True,
                        mode=json_object.get(MODE, DEFAULT_MODE),
-                       send_messages=json_object.get(SEND_MESSAGES,
-                                                     DEFAULT_SEND_MESSAGES))
+                       status_messages=json_object.get(STATUS_MESSAGES,
+                                                     DEFAULT_STATUS_MESSAGES))

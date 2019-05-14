@@ -73,7 +73,7 @@ class AudioRecorder(MQTTClient):
                 if not in_speech:
                     in_speech = True
                     print('Voice activity started on site {}'.format(self.config.site))
-                    if self.config.vad.send_messages:
+                    if self.config.vad.status_messages:
                         self.mqtt.publish(VAD_UP.format(self.config.site),
                                           json.dumps({'siteId': self.config.site,
                                                       'signalMs': 0}))  # Not used
@@ -82,7 +82,7 @@ class AudioRecorder(MQTTClient):
                 if in_speech:
                     in_speech = False
                     print('Voice activity stopped on site {}'.format(self.config.site))
-                    if self.config.vad.send_messages:
+                    if self.config.vad.status_messages:
                         self.mqtt.publish(VAD_DOWN.format(self.config.site),
                                           json.dumps({'siteId': self.config.site,
                                                       'signalMs': 0}))  # Not used

@@ -44,7 +44,7 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
         },
         "vad": {
             "mode": 0,
-            "send_messages": true
+            "status_messages": true
         }
     }
 }
@@ -53,6 +53,11 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
 All keys are optional. The default behaviour is to connect with `localhost:1883` without authentication and TLS and to use `default` as the site ID.
 
 Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
+
+If the `"vad"` key is not specified in the configuration file, Voice Activity Detection is not enabled and all recorded audio frames are streamed continuously on the network. If you don't want this, specify the `"vad"` key to only stream audio when voice activity is detected. You can configure the VAD feature with the following subkeys:
+
+*   "mode": This should be an integer between 0 and 3. 0 is the least aggressive about filtering out non-speech, 3 is the most aggressive. Defaults to 0.
+*   "status_messages": This is a boolean: `true` or `false`. Specifies whether or not Hermes Audio Recorder sends messages on MQTT when it detects the start or end of a voice message. Defaults to `false`.
 
 ## Running Hermes Audio Server
 
