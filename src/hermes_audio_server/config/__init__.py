@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from hermes_audio_server.config.mqtt import MQTTConfig
+from hermes_audio_server.config.vad import VADConfig
 
 
 # Default values
@@ -12,6 +13,7 @@ DEFAULT_SITE = 'default'
 # Keys in the JSON configuration file
 SITE = 'site'
 MQTT = 'mqtt'
+VAD = 'vad'
 
 
 # TODO: Define __str__() with explicit settings for debugging.
@@ -21,9 +23,10 @@ class ServerConfig:
     Attributes:
         site (str): The site ID of the audio server.
         mqtt (:class:`.MQTTConfig`): The MQTT options of the configuration.
+        vad (:class:`.VADConfig`): The VAD options of the configuration.
     """
 
-    def __init__(self, site='default', mqtt=None):
+    def __init__(self, site='default', mqtt=None, vad=None):
         """Initialize a :class:`.ServerConfig` object.
 
         Args:
@@ -31,11 +34,19 @@ class ServerConfig:
                 to 'default'.
             mqtt (:class:`.MQTTConfig`, optional): The MQTT connection
                 settings. Defaults to a default :class:`.MQTTConfig` object.
+            vad (:class:`.VADConfig`, optional): The VAD settings. Defaults
+                to a default :class:`.VADConfig` object, which disables voice
+                activity detection.
         """
         if mqtt is None:
             self.mqtt = MQTTConfig()
         else:
             self.mqtt = mqtt
+
+        if vad is None:
+            self.vad = VADConfig()
+        else:
+            self.vad = vad
 
         self.site = site
 
@@ -61,6 +72,10 @@ class ServerConfig:
         object is initialized with the setting from the configuration file,
         or 'default' is the setting is not specified.
 
+        The :attr:`vad` attribute of the :class:`.ServerConfig` object is
+        initialized with the settings from the configuration file, or not
+        enabled when not specified.
+
         Raises:
             :exc:`FileNotFoundError`: If :attr:`filename` doesn't exist.
 
@@ -83,6 +98,10 @@ class ServerConfig:
                     "client_certificate": "",
                     "client_key": ""
                 }
+            },
+            "vad": {
+                "mode": 0,
+                "send_messages": true
             }
         }
         """
@@ -96,4 +115,5 @@ class ServerConfig:
             raise FileNotFoundError('{} not found'.format(filename))
 
         return cls(site=configuration.get(SITE, DEFAULT_SITE),
-                   mqtt=MQTTConfig.from_json(configuration.get(MQTT)))
+                   mqtt=MQTTConfig.from_json(configuration.get(MQTT)),
+                   vad=VADConfig.from_json(configuration.get(VAD)))
