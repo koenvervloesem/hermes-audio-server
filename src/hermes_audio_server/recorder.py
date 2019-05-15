@@ -32,7 +32,7 @@ class AudioRecorder(MQTTClient):
         print('Connected to audio input {}.'.format(self.audio_in))
 
         if self.config.vad.enabled:
-            print('Voice Activity Detection enabled')
+            print('Voice Activity Detection enabled with mode {}'.format(self.config.vad.mode))
             self.vad = webrtcvad.Vad(self.config.vad.mode)
 
     def start(self):
