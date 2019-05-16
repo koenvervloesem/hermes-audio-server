@@ -56,7 +56,7 @@ All keys are optional. The default behaviour is to connect with `localhost:1883`
 Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
 
 ### Voice Activity Detection
-Voice Activity Detection is an experimental feature in Hermes Audio Server, which is disabled by default. It is based on [py-webrtcvad](https://github.com/wiseman/py-webrtcvad).
+Voice Activity Detection is an experimental feature in Hermes Audio Server, which is disabled by default. It is based on [py-webrtcvad](https://github.com/wiseman/py-webrtcvad) and tries to suppress sending audio frames when there's no speech. Note that the success of this attempt highly depends on your microphone, your environment and your configuration of the VAD feature. Voice Activity Detection in Hermes Audio Server should not be considered a privacy feature, but a feature to save network bandwidth. If you really don't want to send audio frames on your network except when giving voice commands, you should run a wake word service on your device and only then start streaming audio to your Rhasspy server until the end of the command.
 
 If the `vad` key is not specified in the configuration file, Voice Activity Detection is not enabled and all recorded audio frames are streamed continuously on the network. If you don't want this, specify the `vad` key to only stream audio when voice activity is detected. You can configure the VAD feature with the following subkeys:
 
