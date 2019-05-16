@@ -110,6 +110,11 @@ The following features will be developed soon:
 *   Add an option to let the user choose the audio devices
 *   Add more documentation
 
+## Changelog
+
+*   0.1.0 (2019-05-16): Added Voice Activity Detection option.
+*   0.0.2 (2019-05-11): First public version.
+
 ## Other interesting projects
 
 If you find Hermes Audio Server interesting, also have a look at the following projects:
