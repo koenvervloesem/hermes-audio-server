@@ -65,6 +65,7 @@ class AudioRecorder(MQTTClient):
               ' on site {}'.format(self.audio_in, self.config.site))
 
         in_speech = False
+        silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)
 
         # TODO: Simplify if ... if ... if ...
         while True:
@@ -72,6 +73,7 @@ class AudioRecorder(MQTTClient):
             if self.config.vad.enabled and self.vad.is_speech(frames, FRAME_RATE):
                 if not in_speech:
                     in_speech = True
+                    silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)
                     print('Voice activity started on site {}'.format(self.config.site))
                     if self.config.vad.status_messages:
                         self.mqtt.publish(VAD_UP.format(self.config.site),
@@ -79,7 +81,10 @@ class AudioRecorder(MQTTClient):
                                                       'signalMs': 0}))  # Not used
                 self.publish_frames(frames)
             elif self.config.vad.enabled:
-                if in_speech:
+                if in_speech and silence_frames > 0:
+                    self.publish_frames(frames)
+                    silence_frames -= 1
+                elif in_speech:
                     in_speech = False
                     print('Voice activity stopped on site {}'.format(self.config.site))
                     if self.config.vad.status_messages:

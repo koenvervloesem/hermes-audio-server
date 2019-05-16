@@ -2,10 +2,12 @@
 
 # Default values
 DEFAULT_MODE = 0
+DEFAULT_SILENCE = 1
 DEFAULT_STATUS_MESSAGES = False
 
 # Keys in the JSON configuration file
 MODE = 'mode'
+SILENCE = 'silence'
 STATUS_MESSAGES = 'status_messages'
 
 
@@ -17,17 +19,23 @@ class VADConfig:
         enabled (bool): Whether or not VAD is enabled.
         mode (int): Aggressiveness mode for VAD. 0 is the least aggressive
             about filtering out non-speech, 3 is the most aggressive.
+        silence (int): How much silence (no speech detected) in seconds has
+            to go by before Hermes Audio Recorder considers it the end of a
+            voice message. Defaults to 1.
         status_messages (bool): Whether or not Hermes Audio Recorder sends
-             messages on MQTT when it detects the start or end of a voice
-             message.
+            messages on MQTT when it detects the start or end of a voice
+            message.
     """
 
-    def __init__(self, enabled=False, mode=0, status_messages=False):
+    def __init__(self, enabled=False, mode=0, silence=1, status_messages=False):
         """Initialize a :class:`.VADConfig` object.
 
         Args:
             enabled (bool): Whether or not VAD is enabled. Defaults to False.
             mode (int): Aggressiveness mode for VAD. Defaults to 0.
+            silence (int): How much silence (no speech detected) in seconds has
+                to go by before Hermes Audio Recorder considers it the end of a
+                voice message. Defaults to 1.
             status_messages (bool): Whether or not Hermes Audio Recorder sends
                 messages on MQTT when it detects the start or end of a voice
                 message. Defaults to False.
@@ -36,6 +44,7 @@ class VADConfig:
         """
         self.enabled = enabled
         self.mode = mode
+        self.silence = silence
         self.status_messages = status_messages
 
     @classmethod
@@ -54,6 +63,7 @@ class VADConfig:
 
         {
             "mode": 0,
+            "silence": 1,
             "status_messages": true
         }
         """
@@ -62,5 +72,6 @@ class VADConfig:
         else:
             return cls(enabled=True,
                        mode=json_object.get(MODE, DEFAULT_MODE),
+                       silence=json_object.get(SILENCE, DEFAULT_SILENCE),
                        status_messages=json_object.get(STATUS_MESSAGES,
                                                        DEFAULT_STATUS_MESSAGES))

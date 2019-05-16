@@ -44,6 +44,7 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
         },
         "vad": {
             "mode": 0,
+            "silence": 1,
             "status_messages": true
         }
     }
@@ -57,10 +58,11 @@ Currently Hermes Audio Server uses the system's default microphone and speaker. 
 ### Voice Activity Detection
 Voice Activity Detection is an experimental feature in Hermes Audio Server, which is disabled by default. It is based on [py-webrtcvad](https://github.com/wiseman/py-webrtcvad).
 
-If the `"vad"` key is not specified in the configuration file, Voice Activity Detection is not enabled and all recorded audio frames are streamed continuously on the network. If you don't want this, specify the `"vad"` key to only stream audio when voice activity is detected. You can configure the VAD feature with the following subkeys:
+If the `vad` key is not specified in the configuration file, Voice Activity Detection is not enabled and all recorded audio frames are streamed continuously on the network. If you don't want this, specify the `vad` key to only stream audio when voice activity is detected. You can configure the VAD feature with the following subkeys:
 
-*   "mode": This should be an integer between 0 and 3. 0 is the least aggressive about filtering out non-speech, 3 is the most aggressive. Defaults to 0.
-*   "status_messages": This is a boolean: `true` or `false`. Specifies whether or not Hermes Audio Recorder sends messages on MQTT when it detects the start or end of a voice message. Defaults to `false`.
+*   `mode`: This should be an integer between 0 and 3. 0 is the least aggressive about filtering out non-speech, 3 is the most aggressive. Defaults to 0.
+*   `silence`: This defines how much silence (no speech detected) in seconds has to go by before Hermes Audio Recorder considers it the end of a voice message. Defaults to 1. Make sure that this value is higher than `silence_sec` [in the configuration of WebRTCVAD](https://rhasspy.readthedocs.io/en/latest/command-listener/#webrtcvad) for the command listener of Rhasspy, otherwise the command listener will keep waiting for `timeout_sec` seconds before it hands the audio stream to the ASR component.
+*   `status_messages`: This is a boolean: `true` or `false`. Specifies whether or not Hermes Audio Recorder sends messages on MQTT when it detects the start or end of a voice message. Defaults to `false`. This is useful for debugging, when you want to find the right values for `mode` and `silence`.
 
 ## Running Hermes Audio Server
 
