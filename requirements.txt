@@ -3,3 +3,4 @@ paho-mqtt
 plac
 # Needs sudo apt install portaudio19-dev on Raspbian/Debian/Ubuntu
 pyaudio
+webrtcvad

@@ -18,7 +18,7 @@ You can install Hermes Audio Server and its dependencies like this:
 
 ```shell
 sudo apt install portaudio19-dev
-sudo pip3 install hermes-audio-server 
+sudo pip3 install hermes-audio-server
 ```
 
 Note: this installs Hermes Audio Server globally. If you want to install Hermes Audio Server in a Python virtual environment, drop the `sudo`.
@@ -41,6 +41,11 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
             "ca_certificates": "",
             "client_certificate": "",
             "client_key": ""
+        },
+        "vad": {
+            "mode": 0,
+            "silence": 2,
+            "status_messages": true
         }
     }
 }
@@ -49,6 +54,15 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
 All keys are optional. The default behaviour is to connect with `localhost:1883` without authentication and TLS and to use `default` as the site ID.
 
 Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
+
+### Voice Activity Detection
+Voice Activity Detection is an experimental feature in Hermes Audio Server, which is disabled by default. It is based on [py-webrtcvad](https://github.com/wiseman/py-webrtcvad) and tries to suppress sending audio frames when there's no speech. Note that the success of this attempt highly depends on your microphone, your environment and your configuration of the VAD feature. Voice Activity Detection in Hermes Audio Server should not be considered a privacy feature, but a feature to save network bandwidth. If you really don't want to send audio frames on your network except when giving voice commands, you should run a wake word service on your device and only then start streaming audio to your Rhasspy server until the end of the command.
+
+If the `vad` key is not specified in the configuration file, Voice Activity Detection is not enabled and all recorded audio frames are streamed continuously on the network. If you don't want this, specify the `vad` key to only stream audio when voice activity is detected. You can configure the VAD feature with the following subkeys:
+
+*   `mode`: This should be an integer between 0 and 3. 0 is the least aggressive about filtering out non-speech, 3 is the most aggressive. Defaults to 0.
+*   `silence`: This defines how much silence (no speech detected) in seconds has to go by before Hermes Audio Recorder considers it the end of a voice message. Defaults to 2. Make sure that this value is higher than or equal to `min_sec` [in the configuration of WebRTCVAD](https://rhasspy.readthedocs.io/en/latest/command-listener/#webrtcvad) for the command listener of Rhasspy, otherwise the audio stream for the command listener could be aborted too soon.
+*   `status_messages`: This is a boolean: `true` or `false`. Specifies whether or not Hermes Audio Recorder sends messages on MQTT when it detects the start or end of a voice message. Defaults to `false`. This is useful for debugging, when you want to find the right values for `mode` and `silence`.
 
 ## Running Hermes Audio Server
 

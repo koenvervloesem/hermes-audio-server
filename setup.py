@@ -1,10 +1,11 @@
+from importlib import import_module
 from pathlib import Path
 from setuptools import setup, find_packages
 
-import about
-
 SRC_ROOT = 'src'
 BIN_ROOT = 'bin/'
+
+about = import_module(SRC_ROOT + '.hermes_audio_server.about')
 
 with Path('README.md').open('r') as fh:
     long_description = fh.read()
