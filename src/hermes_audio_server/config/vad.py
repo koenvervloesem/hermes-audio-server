@@ -2,7 +2,7 @@
 
 # Default values
 DEFAULT_MODE = 0
-DEFAULT_SILENCE = 1
+DEFAULT_SILENCE = 2
 DEFAULT_STATUS_MESSAGES = False
 
 # Keys in the JSON configuration file
@@ -21,13 +21,13 @@ class VADConfig:
             about filtering out non-speech, 3 is the most aggressive.
         silence (int): How much silence (no speech detected) in seconds has
             to go by before Hermes Audio Recorder considers it the end of a
-            voice message. Defaults to 1.
+            voice message.
         status_messages (bool): Whether or not Hermes Audio Recorder sends
             messages on MQTT when it detects the start or end of a voice
             message.
     """
 
-    def __init__(self, enabled=False, mode=0, silence=1, status_messages=False):
+    def __init__(self, enabled=False, mode=0, silence=2, status_messages=False):
         """Initialize a :class:`.VADConfig` object.
 
         Args:
@@ -35,7 +35,7 @@ class VADConfig:
             mode (int): Aggressiveness mode for VAD. Defaults to 0.
             silence (int): How much silence (no speech detected) in seconds has
                 to go by before Hermes Audio Recorder considers it the end of a
-                voice message. Defaults to 1.
+                voice message. Defaults to 2.
             status_messages (bool): Whether or not Hermes Audio Recorder sends
                 messages on MQTT when it detects the start or end of a voice
                 message. Defaults to False.
@@ -63,7 +63,7 @@ class VADConfig:
 
         {
             "mode": 0,
-            "silence": 1,
+            "silence": 2,
             "status_messages": true
         }
         """

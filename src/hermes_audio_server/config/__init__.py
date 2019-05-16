@@ -101,7 +101,7 @@ class ServerConfig:
             },
             "vad": {
                 "mode": 0,
-                "silence": 1,
+                "silence": 2,
                 "status_messages": true
             }
         }
