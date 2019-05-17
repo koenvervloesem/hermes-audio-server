@@ -41,12 +41,12 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
             "ca_certificates": "",
             "client_certificate": "",
             "client_key": ""
-        },
-        "vad": {
-            "mode": 0,
-            "silence": 2,
-            "status_messages": true
         }
+    },
+    "vad": {
+        "mode": 0,
+        "silence": 2,
+        "status_messages": true
     }
 }
 ```
