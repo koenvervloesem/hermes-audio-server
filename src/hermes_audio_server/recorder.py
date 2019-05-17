@@ -53,6 +53,13 @@ class AudioRecorder(MQTTClient):
             self.mqtt.publish(AUDIO_FRAME.format(self.config.site),
                               wav_buffer.getvalue())
 
+    def publish_vad_status_message(self, message):
+        """Publish a status message about the VAD on MQTT."""
+        if self.config.vad.status_messages:
+            self.mqtt.publish(message.format(self.config.site),
+                              json.dumps({'siteId': self.config.site,
+                                          'signalMs': 0}))  # Not used
+
     def send_audio_frames(self):
         """Send the recorded audio frames continuously in AUDIO_FRAME
         messages on MQTT.
@@ -67,7 +74,7 @@ class AudioRecorder(MQTTClient):
         in_speech = False
         silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)
 
-        # TODO: Simplify if ... if ... if ...
+        # TODO: Simplify if ... if ...
         while True:
             frames = stream.read(CHUNK, exception_on_overflow=False)
             if self.config.vad.enabled and self.vad.is_speech(frames, FRAME_RATE):
@@ -75,10 +82,7 @@ class AudioRecorder(MQTTClient):
                     in_speech = True
                     silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)
                     print('Voice activity started on site {}'.format(self.config.site))
-                    if self.config.vad.status_messages:
-                        self.mqtt.publish(VAD_UP.format(self.config.site),
-                                          json.dumps({'siteId': self.config.site,
-                                                      'signalMs': 0}))  # Not used
+                    self.publish_vad_status_message(VAD_UP)
                 self.publish_frames(frames)
             elif self.config.vad.enabled:
                 if in_speech and silence_frames > 0:
@@ -87,9 +91,6 @@ class AudioRecorder(MQTTClient):
                 elif in_speech:
                     in_speech = False
                     print('Voice activity stopped on site {}'.format(self.config.site))
-                    if self.config.vad.status_messages:
-                        self.mqtt.publish(VAD_DOWN.format(self.config.site),
-                                          json.dumps({'siteId': self.config.site,
-                                                      'signalMs': 0}))  # Not used
+                    self.publish_vad_status_message(VAD_DOWN)
             else:
                 self.publish_frames(frames)
