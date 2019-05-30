@@ -101,17 +101,16 @@ optional arguments:
                         server.json]
 ```
 
-## TODO list
+## Known issues / TODO list
 
-The following features will be developed soon:
-
-*   Add logging
-*   Make it possible to run the commands as daemons (and add systemd unit files)
-*   Add an option to let the user choose the audio devices
-*   Add more documentation
+*   There's no logging yet, although the commands show what they are doing on stdout.
+*   The commands don't have a daemon mode yet.
+*   You can't choose the audio devices yet: the commands use the system's default microphone and speaker.
+*   This project is really a minimal implementation of the audio server part of the Hermes protocol, meant to be used with Rhasspy. It's not a drop-in replacement for snips-audio-server, as it lacks [additional metadata](https://github.com/snipsco/snips-issues/issues/144#issuecomment-494054082) in the WAV frames.
 
 ## Changelog
 
+*   0.1.1 (2019-05-30): Made the audio player more robust when receiving an incorrect WAV file.
 *   0.1.0 (2019-05-16): Added Voice Activity Detection option.
 *   0.0.2 (2019-05-11): First public version.
 
