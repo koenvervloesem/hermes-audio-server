@@ -45,35 +45,38 @@ class AudioPlayer(MQTTClient):
                                                        self.config.site))
 
         with io.BytesIO(message.payload) as wav_buffer:
-            with wave.open(wav_buffer, 'rb') as wav:
-                sample_width = wav.getsampwidth()
-                sample_format = self.audio.get_format_from_width(sample_width)
-                n_channels = wav.getnchannels()
-                frame_rate = wav.getframerate()
+            try:
+                with wave.open(wav_buffer, 'rb') as wav:
+                    sample_width = wav.getsampwidth()
+                    sample_format = self.audio.get_format_from_width(sample_width)
+                    n_channels = wav.getnchannels()
+                    frame_rate = wav.getframerate()
 
-                if self.verbose:
-                    print('Sample width: {}'.format(sample_width))
-                    print('Channels: {}'.format(n_channels))
-                    print('Frame rate: {}'.format(frame_rate))
+                    if self.verbose:
+                        print('Sample width: {}'.format(sample_width))
+                        print('Channels: {}'.format(n_channels))
+                        print('Frame rate: {}'.format(frame_rate))
 
-                stream = self.audio.open(format=sample_format,
-                                         channels=n_channels,
-                                         rate=frame_rate,
-                                         output=True)
+                    stream = self.audio.open(format=sample_format,
+                                             channels=n_channels,
+                                             rate=frame_rate,
+                                             output=True)
 
-                data = wav.readframes(CHUNK)
-
-                while len(data) > 0:
-                    stream.write(data)
                     data = wav.readframes(CHUNK)
 
-                stream.stop_stream()
-                stream.close()
+                    while len(data) > 0:
+                        stream.write(data)
+                        data = wav.readframes(CHUNK)
 
-        self.mqtt.publish(PLAY_FINISHED.format(self.config.site),
-                          json.dumps({'id': request_id,
-                                      'siteId': self.config.site}))
-        print('Finished playing audio message with id {}'
-              ' on device {} on site {}'.format(request_id,
-                                                self.audio_out,
-                                                self.config.site))
+                    stream.stop_stream()
+                    stream.close()
+
+                    self.mqtt.publish(PLAY_FINISHED.format(self.config.site),
+                                      json.dumps({'id': request_id,
+                                                  'siteId': self.config.site}))
+                    print('Finished playing audio message with id {}'
+                          ' on device {} on site {}'.format(request_id,
+                                                            self.audio_out,
+                                                            self.config.site))
+            except wave.Error as error:
+                print(str(error))
