@@ -79,4 +79,4 @@ class AudioPlayer(MQTTClient):
                                                             self.audio_out,
                                                             self.config.site))
             except wave.Error as error:
-                print(str(error))
+                print('Error: {}'.format(str(error)))
