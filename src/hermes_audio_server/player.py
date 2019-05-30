@@ -80,3 +80,5 @@ class AudioPlayer(MQTTClient):
                                                             self.config.site))
             except wave.Error as error:
                 print('Error: {}'.format(str(error)))
+            except EOFError:
+                print('Error: end of WAV buffer')
