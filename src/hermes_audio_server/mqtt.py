@@ -11,7 +11,7 @@ class MQTTClient:
     class, but an object of one of its subclasses.
     """
 
-    def __init__(self, config, verbose):
+    def __init__(self, config, verbose, logger):
         """Initialize an MQTT client.
 
         Args:
@@ -19,9 +19,12 @@ class MQTTClient:
                 the MQTT client.
             verbose (bool): Whether or not the MQTT client runs in verbose
                 mode.
+            logger (:class:`logging.Logger`): The Logger object for logging
+                messages.
         """
         self.config = config
         self.verbose = verbose
+        self.logger = logger
         self.mqtt = Client()
 
         self.initialize()
@@ -57,12 +60,13 @@ class MQTTClient:
     def on_connect(self, client, userdata, flags, result_code):
         """Callback that is called when the client connects to the MQTT broker.
         """
-        print('Connected to MQTT broker {}:{}'
-              ' with result code {}.'.format(self.config.mqtt.host,
-                                             self.config.mqtt.port,
-                                             result_code))
+        self.logger.info('Connected to MQTT broker %s:%s'
+                         ' with result code %s.',
+                         self.config.mqtt.host,
+                         self.config.mqtt.port,
+                         result_code)
 
     def on_disconnect(self, client, userdata, flags, result_code):
         """Callback that is called when the client connects from the MQTT
         broker."""
-        print('Disconnected with result code {}.'.format(result_code))
+        self.logger.info('Disconnected with result code %s.', result_code)

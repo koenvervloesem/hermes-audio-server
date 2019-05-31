@@ -22,7 +22,7 @@ class AudioPlayer(MQTTClient):
         """Initialize a Hermes audio player."""
         self.audio = pyaudio.PyAudio()
         self.audio_out = self.audio.get_default_output_device_info()['name']
-        print('Connected to audio output {}.'.format(self.audio_out))
+        self.logger.info('Connected to audio output %s.', self.audio_out)
 
     def on_connect(self, client, userdata, flags, result_code):
         """Callback that is called when the audio player connects to the MQTT
@@ -31,7 +31,7 @@ class AudioPlayer(MQTTClient):
         play_bytes = PLAY_BYTES.format(self.config.site)
         self.mqtt.subscribe(play_bytes)
         self.mqtt.message_callback_add(play_bytes, self.on_play_bytes)
-        print('Subscribed to {}.'.format(play_bytes))
+        self.logger.info('Subscribed to %s.', play_bytes)
 
     def on_play_bytes(self, client, userdata, message):
         """Callback that is called when the audio player receives a PLAY_BYTES
@@ -39,10 +39,11 @@ class AudioPlayer(MQTTClient):
         """
         request_id = message.topic.split('/')[4]
         length = format_size(len(message.payload), binary=True)
-        print('Received an audio message of length {}'
-              ' with request id {} on site {}.'.format(length,
-                                                       request_id,
-                                                       self.config.site))
+        self.logger.info('Received an audio message of length %s'
+                         ' with request id %s on site %s.',
+                         length,
+                         request_id,
+                         self.config.site)
 
         with io.BytesIO(message.payload) as wav_buffer:
             try:
@@ -52,10 +53,9 @@ class AudioPlayer(MQTTClient):
                     n_channels = wav.getnchannels()
                     frame_rate = wav.getframerate()
 
-                    if self.verbose:
-                        print('Sample width: {}'.format(sample_width))
-                        print('Channels: {}'.format(n_channels))
-                        print('Frame rate: {}'.format(frame_rate))
+                    self.logger.debug('Sample width: %s', sample_width)
+                    self.logger.debug('Channels: %s', n_channels)
+                    self.logger.debug('Frame rate: %s', frame_rate)
 
                     stream = self.audio.open(format=sample_format,
                                              channels=n_channels,
@@ -74,11 +74,12 @@ class AudioPlayer(MQTTClient):
                     self.mqtt.publish(PLAY_FINISHED.format(self.config.site),
                                       json.dumps({'id': request_id,
                                                   'siteId': self.config.site}))
-                    print('Finished playing audio message with id {}'
-                          ' on device {} on site {}'.format(request_id,
-                                                            self.audio_out,
-                                                            self.config.site))
+                    self.logger.info('Finished playing audio message with id %s'
+                                     ' on device %s on site %s',
+                                     request_id,
+                                     self.audio_out,
+                                     self.config.site)
             except wave.Error as error:
-                print('Error: {}'.format(str(error)))
+                self.logger.warning('%s', str(error))
             except EOFError:
-                print('Error: end of WAV buffer')
+                self.logger.warning('End of WAV buffer')

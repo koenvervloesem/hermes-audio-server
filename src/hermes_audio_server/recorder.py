@@ -29,10 +29,11 @@ class AudioRecorder(MQTTClient):
         """Initialize a Hermes audio recorder."""
         self.audio = pyaudio.PyAudio()
         self.audio_in = self.audio.get_default_input_device_info()['name']
-        print('Connected to audio input {}.'.format(self.audio_in))
+        self.logger.info('Connected to audio input %s.', self.audio_in)
 
         if self.config.vad.enabled:
-            print('Voice Activity Detection enabled with mode {}'.format(self.config.vad.mode))
+            self.logger.info('Voice Activity Detection enabled with mode %s.',
+                             self.config.vad.mode)
             self.vad = webrtcvad.Vad(self.config.vad.mode)
 
     def start(self):
@@ -68,8 +69,8 @@ class AudioRecorder(MQTTClient):
                                  rate=FRAME_RATE, input=True,
                                  frames_per_buffer=CHUNK)
 
-        print('Started broadcasting audio from device {}'
-              ' on site {}'.format(self.audio_in, self.config.site))
+        self.logger.info('Started broadcasting audio from device %s'
+                         ' on site %s.', self.audio_in, self.config.site)
 
         in_speech = False
         silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)
@@ -81,7 +82,8 @@ class AudioRecorder(MQTTClient):
                 if not in_speech:
                     in_speech = True
                     silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)
-                    print('Voice activity started on site {}'.format(self.config.site))
+                    self.logger.info('Voice activity started on site %s.',
+                                     self.config.site)
                     self.publish_vad_status_message(VAD_UP)
                 self.publish_frames(frames)
             elif self.config.vad.enabled:
@@ -90,7 +92,8 @@ class AudioRecorder(MQTTClient):
                     silence_frames -= 1
                 elif in_speech:
                     in_speech = False
-                    print('Voice activity stopped on site {}'.format(self.config.site))
+                    self.logger.info('Voice activity stopped on site %s.',
+                                     self.config.site)
                     self.publish_vad_status_message(VAD_DOWN)
             else:
                 self.publish_frames(frames)
