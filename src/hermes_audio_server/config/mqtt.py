@@ -136,13 +136,14 @@ class MQTTTLSConfig:
         }
         """
         if json_object is None:
-            return cls(enabled=False)
+            ret = cls(enabled=False)
         else:
-            return cls(enabled=True,
-                       ca_certs=json_object.get(CA_CERTS),
-                       client_key=json_object.get(CLIENT_KEY),
-                       client_cert=json_object.get(CLIENT_CERT))
+            ret = cls(enabled=True,
+                      ca_certs=json_object.get(CA_CERTS),
+                      client_key=json_object.get(CLIENT_KEY),
+                      client_cert=json_object.get(CLIENT_CERT))
 
+        return ret
 
 class MQTTConfig:
     """This class represents the configuration for a connection to an

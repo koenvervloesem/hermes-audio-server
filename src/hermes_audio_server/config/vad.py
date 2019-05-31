@@ -68,10 +68,12 @@ class VADConfig:
         }
         """
         if json_object is None:
-            return cls(enabled=False)
+            ret = cls(enabled=False)
         else:
-            return cls(enabled=True,
-                       mode=json_object.get(MODE, DEFAULT_MODE),
-                       silence=json_object.get(SILENCE, DEFAULT_SILENCE),
-                       status_messages=json_object.get(STATUS_MESSAGES,
-                                                       DEFAULT_STATUS_MESSAGES))
+            ret = cls(enabled=True,
+                      mode=json_object.get(MODE, DEFAULT_MODE),
+                      silence=json_object.get(SILENCE, DEFAULT_SILENCE),
+                      status_messages=json_object.get(STATUS_MESSAGES,
+                                                      DEFAULT_STATUS_MESSAGES))
+
+        return ret

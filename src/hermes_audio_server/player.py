@@ -64,7 +64,7 @@ class AudioPlayer(MQTTClient):
 
                     data = wav.readframes(CHUNK)
 
-                    while len(data) > 0:
+                    while data:
                         stream.write(data)
                         data = wav.readframes(CHUNK)
 
