@@ -79,6 +79,9 @@ class ServerConfig:
         Raises:
             :exc:`FileNotFoundError`: If :attr:`filename` doesn't exist.
 
+            :exc:`PermissionError`: If we have no read permissions for
+                :attr:`filename`.
+
             :exc:`JSONDecodeError`: If :attr:`filename` doesn't have a valid
                 JSON syntax.
 
@@ -109,11 +112,8 @@ class ServerConfig:
         if not filename:
             filename = DEFAULT_CONFIG
 
-        try:
-            with Path(filename).open('r') as json_file:
-                configuration = json.load(json_file)
-        except FileNotFoundError:
-            raise FileNotFoundError('{} not found'.format(filename))
+        with Path(filename).open('r') as json_file:
+            configuration = json.load(json_file)
 
         return cls(site=configuration.get(SITE, DEFAULT_SITE),
                    mqtt=MQTTConfig.from_json(configuration.get(MQTT)),

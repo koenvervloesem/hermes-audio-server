@@ -1,6 +1,8 @@
 """This module contains the main function run by the CLI commands
 hermes-audio-player and hermes-audio-recorder.
 """
+from json import JSONDecodeError
+
 from hermes_audio_server.about import VERSION
 from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
 from hermes_audio_server.player import AudioPlayer
@@ -29,8 +31,12 @@ def main(command, verbose, version, config):
                                      verbose)
 
             server.start()
-    except FileNotFoundError as not_found:
-        print('Configuration file {}.'.format(not_found))
+    except FileNotFoundError as error:
+        print('Error: Configuration file {} not found.'.format(error.filename))
+    except JSONDecodeError as error:
+        print('Error: {} is not a valid JSON file. Parsing failed at line {} and column {}.'.format(config, error.lineno, error.colno))
     except KeyboardInterrupt:
         print('Shutting down {}...'.format(command))
         server.audio.terminate()
+    except PermissionError as error:
+        print('Error: Can\'t read file {}. Make sure you have read permissions'.format(error.filename))
