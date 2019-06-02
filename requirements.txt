@@ -1,3 +1,4 @@
+colorlog
 humanfriendly
 paho-mqtt
 plac
