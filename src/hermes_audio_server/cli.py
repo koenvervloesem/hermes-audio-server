@@ -2,8 +2,10 @@
 hermes-audio-player and hermes-audio-recorder.
 """
 from json import JSONDecodeError
+import signal
+import sys
 
-import daemon as daemon_context
+from daemon import DaemonContext
 
 from hermes_audio_server.about import VERSION
 from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
@@ -26,14 +28,33 @@ def main(command, verbose, version, config, daemon):
         config (str): Configuration file.
         daemon (bool): Run as a daemon if True.
     """
-    logger = get_logger(command, verbose, daemon)
+    # Define signal handlers to cleanly exit the program.
+    def quit_process(signal_number, frame):
+        print('Received SIGQUIT signal')
+        server.stop()
+        sys.exit(0)
 
-    logger.info('%s %s', command, VERSION)
+    def terminate_process(signal_number, frame):
+        print('Received SIGTERM signal')
+        server.stop()
+        sys.exit(0)
 
-    if daemon:
-        daemon_context.DaemonContext(files_preserve=[logger.handlers[0].socket]).open()
+    # Register signals
+    signal.signal(signal.SIGQUIT, quit_process)
+    signal.signal(signal.SIGTERM, terminate_process)
 
     try:
+
+        logger = get_logger(command, verbose, daemon)
+        logger.info('%s %s', command, VERSION)
+
+        # Daemonize the program
+        if daemon:
+            context = DaemonContext(files_preserve=[logger.handlers[0].socket])
+            context.signal_map = {signal.SIGQUIT: quit_process,
+                                  signal.SIGTERM: terminate_process}
+            context.open()
+
         if not version:
             if not config:
                 config = DEFAULT_CONFIG
@@ -44,12 +65,17 @@ def main(command, verbose, version, config, daemon):
             server.start()
     except FileNotFoundError as error:
         logger.critical('Configuration file %s not found. Exiting...', error.filename)
+        sys.exit(1)
     except JSONDecodeError as error:
         logger.critical('%s is not a valid JSON file. Parsing failed at line %s and column %s. Exiting...', config, error.lineno, error.colno)
+        sys.exit(1)
     except KeyboardInterrupt:
-        logger.info('Shutting down %s...', command)
-        server.audio.terminate()
+        logger.info('Received SIGINT signal. Shutting down %s...', command)
+        server.stop()
+        sys.exit(0)
     except PermissionError as error:
         logger.critical('Can\'t read file %s. Make sure you have read permissions. Exiting...', error.filename)
+        sys.exit(1)
     except UnsupportedPlatformError as error:
         print('Error: {} is not a supported platform.'.format(error.platform))
+        sys.exit(1)

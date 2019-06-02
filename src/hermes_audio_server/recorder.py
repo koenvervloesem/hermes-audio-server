@@ -40,7 +40,14 @@ class AudioRecorder(MQTTClient):
         """Start the event loop to the MQTT broker and start the audio
         recording."""
         Thread(target=self.send_audio_frames, daemon=True).start()
+        self.logger.debug('Started audio thread.')
         super(AudioRecorder, self).start()
+
+    def stop(self):
+        """Stop the event loop to the MQTT broker and terminate the audio."""
+        super(AudioRecorder, self).stop()
+        self.audio.terminate()
+        self.logger.debug('Terminated audio.')
 
     def publish_frames(self, frames):
         """Publish frames on MQTT."""

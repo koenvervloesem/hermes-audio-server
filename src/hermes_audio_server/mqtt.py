@@ -55,7 +55,16 @@ class MQTTClient:
         """Start the event loop to the MQTT broker so the audio server starts
         listening to MQTT topics and the callback methods are called.
         """
+        self.logger.debug('Started MQTT event loop.')
         self.mqtt.loop_forever()
+
+    def stop(self):
+        """Stop the event loop to the MQTT broker so the audio server stops
+        listening to MQTT topics and the callback methods aren't called
+        anymore.
+        """
+        self.mqtt.disconnect()
+        self.logger.debug('Stopped MQTT event loop.')
 
     def on_connect(self, client, userdata, flags, result_code):
         """Callback that is called when the client connects to the MQTT broker.

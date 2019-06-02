@@ -24,6 +24,12 @@ class AudioPlayer(MQTTClient):
         self.audio_out = self.audio.get_default_output_device_info()['name']
         self.logger.info('Connected to audio output %s.', self.audio_out)
 
+    def stop(self):
+        """Stop the event loop to the MQTT broker and terminate the audio."""
+        super(AudioPlayer, self).stop()
+        self.audio.terminate()
+        self.logger.debug('Terminated audio.')
+
     def on_connect(self, client, userdata, flags, result_code):
         """Callback that is called when the audio player connects to the MQTT
         broker."""
