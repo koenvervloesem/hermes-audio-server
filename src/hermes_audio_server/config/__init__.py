@@ -4,6 +4,7 @@ from pathlib import Path
 
 from hermes_audio_server.config.mqtt import MQTTConfig
 from hermes_audio_server.config.vad import VADConfig
+from hermes_audio_server.exceptions import ConfigurationFileNotFoundError
 
 
 # Default values
@@ -77,7 +78,8 @@ class ServerConfig:
         enabled when not specified.
 
         Raises:
-            :exc:`FileNotFoundError`: If :attr:`filename` doesn't exist.
+            :exc:`ConfigurationFileNotFoundError`: If :attr:`filename` doesn't
+                exist.
 
             :exc:`PermissionError`: If we have no read permissions for
                 :attr:`filename`.
@@ -112,8 +114,11 @@ class ServerConfig:
         if not filename:
             filename = DEFAULT_CONFIG
 
-        with Path(filename).open('r') as json_file:
-            configuration = json.load(json_file)
+        try:
+            with Path(filename).open('r') as json_file:
+                configuration = json.load(json_file)
+        except FileNotFoundError as error:
+            raise ConfigurationFileNotFoundError(error.filename)
 
         return cls(site=configuration.get(SITE, DEFAULT_SITE),
                    mqtt=MQTTConfig.from_json(configuration.get(MQTT)),

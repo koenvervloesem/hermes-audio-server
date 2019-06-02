@@ -9,7 +9,8 @@ from daemon import DaemonContext
 
 from hermes_audio_server.about import VERSION
 from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
-from hermes_audio_server.exceptions import UnsupportedPlatformError
+from hermes_audio_server.exceptions import ConfigurationFileNotFoundError, \
+    UnsupportedPlatformError
 from hermes_audio_server.logger import get_logger
 from hermes_audio_server.player import AudioPlayer
 from hermes_audio_server.recorder import AudioRecorder
@@ -63,7 +64,7 @@ def main(command, verbose, version, config, daemon):
                                      verbose, logger)
 
             server.start()
-    except FileNotFoundError as error:
+    except ConfigurationFileNotFoundError as error:
         logger.critical('Configuration file %s not found. Exiting...', error.filename)
         sys.exit(1)
     except JSONDecodeError as error:

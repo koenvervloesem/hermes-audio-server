@@ -8,6 +8,14 @@ class HermesAudioServerError(Exception):
     defined by the Hermes Audio Server code."""
 
 
+class ConfigurationFileNotFoundError(HermesAudioServerError):
+    """Raised when the configuration file is not found."""
+
+    def __init__(self, filename):
+        """Initialize the exception with a string representing the filename."""
+        self.filename = filename
+
+
 class UnsupportedPlatformError(HermesAudioServerError):
     """Raised when the platform Hermes Audio Server is running on is not
     supported."""
