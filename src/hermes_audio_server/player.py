@@ -5,6 +5,7 @@ import wave
 
 from humanfriendly import format_size
 
+from hermes_audio_server.exceptions import NoDefaultAudioDeviceError
 from hermes_audio_server.mqtt import MQTTClient
 
 PLAY_BYTES = 'hermes/audioServer/{}/playBytes/+'
@@ -19,7 +20,10 @@ class AudioPlayer(MQTTClient):
 
     def initialize(self):
         """Initialize a Hermes audio player."""
-        self.audio_out = self.audio.get_default_output_device_info()['name']
+        try:
+            self.audio_out = self.audio.get_default_output_device_info()['name']
+        except OSError:
+            raise NoDefaultAudioDeviceError('output')
         self.logger.info('Connected to audio output %s.', self.audio_out)
 
     def on_connect(self, client, userdata, flags, result_code):

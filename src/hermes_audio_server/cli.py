@@ -10,7 +10,7 @@ from daemon import DaemonContext
 from hermes_audio_server.about import VERSION
 from hermes_audio_server.config import ServerConfig, DEFAULT_CONFIG
 from hermes_audio_server.exceptions import ConfigurationFileNotFoundError, \
-    UnsupportedPlatformError
+    NoDefaultAudioDeviceError, UnsupportedPlatformError
 from hermes_audio_server.logger import get_logger
 from hermes_audio_server.player import AudioPlayer
 from hermes_audio_server.recorder import AudioRecorder
@@ -76,6 +76,10 @@ def main(command, verbose, version, config, daemon):
         logger.info('Received SIGINT signal. Shutting down %s...', command)
         server.stop()
         sys.exit(0)
+    except NoDefaultAudioDeviceError as error:
+        logger.critical('No default audio %s device available. Exiting...',
+                        error.inout)
+        sys.exit(1)
     except PermissionError as error:
         logger.critical('Can\'t read file %s. Make sure you have read permissions. Exiting...', error.filename)
         sys.exit(1)

@@ -27,6 +27,7 @@ class MQTTClient:
         self.verbose = verbose
         self.logger = logger
         self.mqtt = Client()
+        self.logger.debug('Using %s', pyaudio.get_portaudio_version_text())
         self.logger.debug('Creating PyAudio object...')
         self.audio = pyaudio.PyAudio()
 

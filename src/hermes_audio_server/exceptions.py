@@ -16,6 +16,15 @@ class ConfigurationFileNotFoundError(HermesAudioServerError):
         self.filename = filename
 
 
+class NoDefaultAudioDeviceError(HermesAudioServerError):
+    """Raised when there's no default audio device available."""
+
+    def __init__(self, inout):
+        """Initialize the exception with a string representing input or output.
+        """
+        self.inout = inout
+
+
 class UnsupportedPlatformError(HermesAudioServerError):
     """Raised when the platform Hermes Audio Server is running on is not
     supported."""

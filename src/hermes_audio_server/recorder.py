@@ -7,6 +7,7 @@ import wave
 import pyaudio
 import webrtcvad
 
+from hermes_audio_server.exceptions import NoDefaultAudioDeviceError
 from hermes_audio_server.mqtt import MQTTClient
 
 AUDIO_FRAME = 'hermes/audioServer/{}/audioFrame'
@@ -27,7 +28,10 @@ class AudioRecorder(MQTTClient):
 
     def initialize(self):
         """Initialize a Hermes audio recorder."""
-        self.audio_in = self.audio.get_default_input_device_info()['name']
+        try:
+            self.audio_in = self.audio.get_default_input_device_info()['name']
+        except OSError:
+            raise NoDefaultAudioDeviceError('input')
         self.logger.info('Connected to audio input %s.', self.audio_in)
 
         if self.config.vad.enabled:
