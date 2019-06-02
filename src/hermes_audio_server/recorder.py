@@ -27,7 +27,6 @@ class AudioRecorder(MQTTClient):
 
     def initialize(self):
         """Initialize a Hermes audio recorder."""
-        self.audio = pyaudio.PyAudio()
         self.audio_in = self.audio.get_default_input_device_info()['name']
         self.logger.info('Connected to audio input %s.', self.audio_in)
 
@@ -39,15 +38,9 @@ class AudioRecorder(MQTTClient):
     def start(self):
         """Start the event loop to the MQTT broker and start the audio
         recording."""
+        self.logger.debug('Starting audio thread...')
         Thread(target=self.send_audio_frames, daemon=True).start()
-        self.logger.debug('Started audio thread.')
-        super(AudioRecorder, self).start()
-
-    def stop(self):
-        """Stop the event loop to the MQTT broker and terminate the audio."""
-        super(AudioRecorder, self).stop()
-        self.audio.terminate()
-        self.logger.debug('Terminated audio.')
+        super().start()
 
     def publish_frames(self, frames):
         """Publish frames on MQTT."""
@@ -58,26 +51,36 @@ class AudioRecorder(MQTTClient):
                 wav.setsampwidth(SAMPLE_WIDTH)
                 wav.setframerate(FRAME_RATE)
                 wav.writeframes(frames)
-            self.mqtt.publish(AUDIO_FRAME.format(self.config.site),
-                              wav_buffer.getvalue())
+
+            audio_frame_topic = AUDIO_FRAME.format(self.config.site)
+            audio_frame_message = wav_buffer.getvalue()
+            self.mqtt.publish(audio_frame_topic, audio_frame_message)
+            self.logger.debug('Published message on MQTT topic:')
+            self.logger.debug('Topic: %s', audio_frame_topic)
+            self.logger.debug('Message: %d bytes', len(audio_frame_message))
 
     def publish_vad_status_message(self, message):
         """Publish a status message about the VAD on MQTT."""
         if self.config.vad.status_messages:
-            self.mqtt.publish(message.format(self.config.site),
-                              json.dumps({'siteId': self.config.site,
-                                          'signalMs': 0}))  # Not used
+            vad_status_topic = message.format(self.config.site)
+            vad_status_message = json.dumps({'siteId': self.config.site,
+                                             'signalMs': 0})  # Not used
+            self.mqtt.publish(vad_status_topic, vad_status_message)
+            self.logger.debug('Published message on MQTT topic:')
+            self.logger.debug('Topic: %s', vad_status_topic)
+            self.logger.debug('Message: %s', vad_status_message)
 
     def send_audio_frames(self):
         """Send the recorded audio frames continuously in AUDIO_FRAME
         messages on MQTT.
         """
+        self.logger.debug('Opening audio input stream...')
         stream = self.audio.open(format=pyaudio.paInt16, channels=CHANNELS,
                                  rate=FRAME_RATE, input=True,
                                  frames_per_buffer=CHUNK)
 
-        self.logger.info('Started broadcasting audio from device %s'
-                         ' on site %s.', self.audio_in, self.config.site)
+        self.logger.info('Starting broadcasting audio from device %s'
+                         ' on site %s...', self.audio_in, self.config.site)
 
         in_speech = False
         silence_frames = int(FRAME_RATE / CHUNK * self.config.vad.silence)

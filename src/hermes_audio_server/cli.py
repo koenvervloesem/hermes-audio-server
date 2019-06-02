@@ -29,39 +29,41 @@ def main(command, verbose, version, config, daemon):
         config (str): Configuration file.
         daemon (bool): Run as a daemon if True.
     """
-    # Define signal handlers to cleanly exit the program.
-    def quit_process(signal_number, frame):
-        print('Received SIGQUIT signal')
+    # Define signal handler to cleanly exit the program.
+    def exit_process(signal_number, frame):
+        # pylint: disable=no-member
+        logger.info('Received %s signal. Exiting...',
+                    signal.Signals(signal_number).name)
         server.stop()
         sys.exit(0)
 
-    def terminate_process(signal_number, frame):
-        print('Received SIGTERM signal')
-        server.stop()
-        sys.exit(0)
-
-    # Register signals
-    signal.signal(signal.SIGQUIT, quit_process)
-    signal.signal(signal.SIGTERM, terminate_process)
+    # Register signals.
+    signal.signal(signal.SIGQUIT, exit_process)
+    signal.signal(signal.SIGTERM, exit_process)
 
     try:
 
         logger = get_logger(command, verbose, daemon)
         logger.info('%s %s', command, VERSION)
 
-        # Daemonize the program
+        # Start the program as a daemon.
         if daemon:
+            logger.debug('Starting daemon...')
             context = DaemonContext(files_preserve=[logger.handlers[0].socket])
-            context.signal_map = {signal.SIGQUIT: quit_process,
-                                  signal.SIGTERM: terminate_process}
+            context.signal_map = {signal.SIGQUIT: exit_process,
+                                  signal.SIGTERM: exit_process}
             context.open()
 
         if not version:
             if not config:
+                logger.debug('Using default configuration file.')
                 config = DEFAULT_CONFIG
 
-            server = SERVER[command](ServerConfig.from_json_file(config),
-                                     verbose, logger)
+            server_class = SERVER[command]
+            logger.debug('Creating %s object...', server_class.__name__)
+            server = server_class(ServerConfig.from_json_file(config),
+                                  verbose,
+                                  logger)
 
             server.start()
     except ConfigurationFileNotFoundError as error:
@@ -78,5 +80,6 @@ def main(command, verbose, version, config, daemon):
         logger.critical('Can\'t read file %s. Make sure you have read permissions. Exiting...', error.filename)
         sys.exit(1)
     except UnsupportedPlatformError as error:
+        # Don't use logger because this exception is thrown while logging.
         print('Error: {} is not a supported platform.'.format(error.platform))
         sys.exit(1)

@@ -4,7 +4,6 @@ import json
 import wave
 
 from humanfriendly import format_size
-import pyaudio
 
 from hermes_audio_server.mqtt import MQTTClient
 
@@ -20,24 +19,20 @@ class AudioPlayer(MQTTClient):
 
     def initialize(self):
         """Initialize a Hermes audio player."""
-        self.audio = pyaudio.PyAudio()
         self.audio_out = self.audio.get_default_output_device_info()['name']
         self.logger.info('Connected to audio output %s.', self.audio_out)
-
-    def stop(self):
-        """Stop the event loop to the MQTT broker and terminate the audio."""
-        super(AudioPlayer, self).stop()
-        self.audio.terminate()
-        self.logger.debug('Terminated audio.')
 
     def on_connect(self, client, userdata, flags, result_code):
         """Callback that is called when the audio player connects to the MQTT
         broker."""
-        super(AudioPlayer, self).on_connect(client, userdata, flags, result_code)
+        super().on_connect(client, userdata, flags, result_code)
+        # Listen to the MQTT topic defined in the Hermes protocol to play a WAV
+        # file.
+        # See https://docs.snips.ai/reference/hermes#playing-a-wav-sound
         play_bytes = PLAY_BYTES.format(self.config.site)
         self.mqtt.subscribe(play_bytes)
         self.mqtt.message_callback_add(play_bytes, self.on_play_bytes)
-        self.logger.info('Subscribed to %s.', play_bytes)
+        self.logger.info('Subscribed to %s topic.', play_bytes)
 
     def on_play_bytes(self, client, userdata, message):
         """Callback that is called when the audio player receives a PLAY_BYTES
@@ -63,11 +58,13 @@ class AudioPlayer(MQTTClient):
                     self.logger.debug('Channels: %s', n_channels)
                     self.logger.debug('Frame rate: %s', frame_rate)
 
+                    self.logger.debug('Opening audio output stream...')
                     stream = self.audio.open(format=sample_format,
                                              channels=n_channels,
                                              rate=frame_rate,
                                              output=True)
 
+                    self.logger.debug('Playing WAV buffer on audio output...')
                     data = wav.readframes(CHUNK)
 
                     while data:
@@ -75,16 +72,27 @@ class AudioPlayer(MQTTClient):
                         data = wav.readframes(CHUNK)
 
                     stream.stop_stream()
+                    self.logger.debug('Closing audio output stream...')
                     stream.close()
 
-                    self.mqtt.publish(PLAY_FINISHED.format(self.config.site),
-                                      json.dumps({'id': request_id,
-                                                  'siteId': self.config.site}))
                     self.logger.info('Finished playing audio message with id %s'
                                      ' on device %s on site %s',
                                      request_id,
                                      self.audio_out,
                                      self.config.site)
+
+                    # Publish a message that the audio service has finished
+                    # playing the sound.
+                    # See https://docs.snips.ai/reference/hermes#being-notified-when-sound-has-finished-playing
+                    # This implementation doesn't publish a session ID.
+                    play_finished_topic = PLAY_FINISHED.format(self.config.site)
+                    play_finished_message = json.dumps({'id': request_id,
+                                                        'siteId': self.config.site})
+                    self.mqtt.publish(play_finished_topic,
+                                      play_finished_message)
+                    self.logger.debug('Published message on MQTT topic:')
+                    self.logger.debug('Topic: %s', play_finished_topic)
+                    self.logger.debug('Message: %s', play_finished_message)
             except wave.Error as error:
                 self.logger.warning('%s', str(error))
             except EOFError:
