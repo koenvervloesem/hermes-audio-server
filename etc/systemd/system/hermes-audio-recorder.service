@@ -1,0 +1,13 @@
+[Unit]
+Description=Hermes Audio Recorder
+After=network.target
+
+[Service]
+User=hermes-audio-server
+Group=hermes-audio-server
+ExecStart=/usr/local/bin/hermes-audio-recorder -d
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

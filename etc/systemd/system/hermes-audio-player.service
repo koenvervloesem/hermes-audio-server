@@ -1,0 +1,13 @@
+[Unit]
+Description=Hermes Audio Player
+After=network.target
+
+[Service]
+User=hermes-audio-server
+Group=hermes-audio-server
+ExecStart=/usr/local/bin/hermes-audio-player -d
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
