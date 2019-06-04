@@ -145,6 +145,7 @@ class MQTTTLSConfig:
 
         return ret
 
+
 class MQTTConfig:
     """This class represents the configuration for a connection to an
     MQTT broker.
