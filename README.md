@@ -10,7 +10,7 @@ With Hermes Audio Server, you can use the microphone and speaker of your compute
 
 ## System requirements
 
-Hermes Audio Server requires Python 3. It has been tested on a Raspberry Pi running Raspbian 9.8, but in principle it should be cross-platform. Please open an issue on GitHub when you encounter problems on your platform.
+Hermes Audio Server requires Python 3. It has been tested on a Raspberry Pi running Raspbian 9.8 and an x86_64 laptop with Ubuntu 19.04, but in principle it should be cross-platform. Please [open an issue](https://github.com/koenvervloesem/hermes-audio-server/issues) on GitHub when you encounter problems or when the software exits with the message that your platform is not supported.
 
 ## Installation
 
@@ -80,7 +80,7 @@ All keys in the configuration file are optional. The default behaviour is to con
 }
 ```
 
-Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
+Currently Hermes Audio Server uses the system's default microphone and speaker. In a future version this will be configurable.
 
 ### Voice Activity Detection
 Voice Activity Detection is an experimental feature in Hermes Audio Server, which is disabled by default. It is based on [py-webrtcvad](https://github.com/wiseman/py-webrtcvad) and tries to suppress sending audio frames when there's no speech. Note that the success of this attempt highly depends on your microphone, your environment and your configuration of the VAD feature. Voice Activity Detection in Hermes Audio Server should not be considered a privacy feature, but a feature to save network bandwidth. If you really don't want to send audio frames on your network except when giving voice commands, you should run a wake word service on your device and only then start streaming audio to your Rhasspy server until the end of the command.
@@ -126,24 +126,24 @@ optional arguments:
   -c CONFIG, --config CONFIG
                         configuration file [default: /etc/hermes-audio-
                         server.json]
+  -d, --daemon          run as daemon
 ```
 
 ## Known issues / TODO list
 
-*   There's no logging yet, although the commands show what they are doing on stdout.
-*   The commands don't have a daemon mode yet.
 *   You can't choose the audio devices yet: the commands use the system's default microphone and speaker.
 *   This project is really a minimal implementation of the audio server part of the Hermes protocol, meant to be used with Rhasspy. It's not a drop-in replacement for snips-audio-server, as it lacks [additional metadata](https://github.com/snipsco/snips-issues/issues/144#issuecomment-494054082) in the WAV frames.
 
 ## Changelog
 
+*   0.2.0 (2019-06-04): Added logging and a daemon mode.
 *   0.1.1 (2019-05-30): Made the audio player more robust when receiving an incorrect WAV file.
 *   0.1.0 (2019-05-16): Added Voice Activity Detection option.
 *   0.0.2 (2019-05-11): First public version.
 
 ## Other interesting projects
 
-If you find Hermes Audio Server interesting, also have a look at the following projects:
+If you find Hermes Audio Server interesting, have a look at the following projects too:
 
 *   [Rhasspy](https://rhasspy.readthedocs.io): An offline, multilingual voice assistant toolkit that works with [Home Assistant](https://www.home-assistant.io) and is completely open source.
 *   [Snips Led Control](https://github.com/Psychokiller1888/snipsLedControl): An easy way to control the leds of your Snips-compatible device, with led patterns when the hotword is detected, the device is listening, speaking, idle, ...
