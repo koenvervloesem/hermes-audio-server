@@ -23,21 +23,6 @@ sudo pip3 install hermes-audio-server
 
 Note: this installs Hermes Audio Server globally. If you want to install Hermes Audio Server in a Python virtual environment, drop the `sudo`.
 
-## Running as a service
-You can run Hermes Audio Server as a service.
-
-It's recommended to run it as a system user. Create this user without a login shell and without creating a home directory for the user:
-
-```shell
-sudo useradd -r -s /bin/false hermes-audio-server
-```
-
-This user also needs access to your audio devices:
-
-```shell
-sudo usermod -a -G audio hermes-audio-server
-```
-
 ## Configuration
 
 Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.json`, which has the following format:
@@ -127,6 +112,39 @@ optional arguments:
                         configuration file [default: /etc/hermes-audio-
                         server.json]
   -d, --daemon          run as daemon
+```
+
+## Running as a service
+After you have verified that Hermes Audio Server works by running the player and recorder manually, possibly in verbose mode, it's better to run both commands as services.
+
+It's recommended to run the Hermes Audio Server commands as a system user. Create this user without a login shell and without creating a home directory for the user:
+
+```shell
+sudo useradd -r -s /bin/false hermes-audio-server
+```
+
+This user also needs access to your audio devices, so add them to the `audio` group:
+
+```shell
+sudo usermod -a -G audio hermes-audio-server
+```
+
+Then create [systemd service files](https://github.com/koenvervloesem/hermes-audio-server/tree/master/etc/systemd/system) for the `hermes-audio-player` and `hermes-audio-recorder` commands and copy them to `/etc/systemd/system`.
+
+If you want to run the commands as another user, then cange the lines with `User` and `Group`. 
+
+After this, you can start the player and recorder as services:
+
+```shell
+sudo systemctl start hermes-audio-player.service
+sudo systemctl start hermes-audio-recorder.service
+```
+
+If you want them to start automatically after booting the computer, enable the services with:
+
+```shell
+sudo systemctl enable hermes-audio-player.service
+sudo systemctl enable hermes-audio-player.services
 ```
 
 ## Known issues / TODO list
