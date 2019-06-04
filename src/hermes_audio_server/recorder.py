@@ -28,6 +28,13 @@ class AudioRecorder(MQTTClient):
 
     def initialize(self):
         """Initialize a Hermes audio recorder."""
+        self.logger.debug('Probing for available input devices...')
+        for index in range(self.audio.get_device_count()):
+            device = self.audio.get_device_info_by_index(index)
+            name = device['name']
+            channels = device['maxInputChannels']
+            if channels:
+                self.logger.debug('[%d] %s', index, name)
         try:
             self.audio_in = self.audio.get_default_input_device_info()['name']
         except OSError:

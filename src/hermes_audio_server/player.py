@@ -20,6 +20,13 @@ class AudioPlayer(MQTTClient):
 
     def initialize(self):
         """Initialize a Hermes audio player."""
+        self.logger.debug('Probing for available output devices...')
+        for index in range(self.audio.get_device_count()):
+            device = self.audio.get_device_info_by_index(index)
+            name = device['name']
+            channels = device['maxOutputChannels']
+            if channels:
+                self.logger.debug('[%d] %s', index, name)
         try:
             self.audio_out = self.audio.get_default_output_device_info()['name']
         except OSError:
@@ -80,7 +87,7 @@ class AudioPlayer(MQTTClient):
                     stream.close()
 
                     self.logger.info('Finished playing audio message with id %s'
-                                     ' on device %s on site %s',
+                                     ' on device %s on site %s.',
                                      request_id,
                                      self.audio_out,
                                      self.config.site)
