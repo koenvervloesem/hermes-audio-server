@@ -23,6 +23,21 @@ sudo pip3 install hermes-audio-server
 
 Note: this installs Hermes Audio Server globally. If you want to install Hermes Audio Server in a Python virtual environment, drop the `sudo`.
 
+## Running as a service
+You can run Hermes Audio Server as a service.
+
+It's recommended to run it as a system user. Create this user without a login shell and without creating a home directory for the user:
+
+```shell
+sudo useradd -r -s /bin/false hermes-audio-server
+```
+
+This user also needs access to your audio devices:
+
+```shell
+sudo usermod -a -G audio hermes-audio-server
+```
+
 ## Configuration
 
 Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.json`, which has the following format:
@@ -51,7 +66,19 @@ Hermes Audio Server is configured in the JSON file `/etc/hermes-audio-server.jso
 }
 ```
 
-All keys are optional. The default behaviour is to connect with `localhost:1883` without authentication and TLS and to use `default` as the site ID.
+Note that this supposes that you're using authentication and TLS for the connection to your MQTT broker and that this enables the experimental Voice Activity Detection (see below).
+
+All keys in the configuration file are optional. The default behaviour is to connect with `localhost:1883` without authentication and TLS and to use `default` as the site ID and disable Voice Activity Detection. A configuration file for this situation would like like this:
+
+```json
+{
+    "site": "default",
+    "mqtt": {
+        "host": "localhost",
+        "port": 1883
+    }
+}
+```
 
 Currently Hermes Audio Server uses the system's default microphone and speaker. In the next version this will be configurable.
 
