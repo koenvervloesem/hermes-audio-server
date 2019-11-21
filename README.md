@@ -144,7 +144,7 @@ If you want them to start automatically after booting the computer, enable the s
 
 ```shell
 sudo systemctl enable hermes-audio-player.service
-sudo systemctl enable hermes-audio-player.services
+sudo systemctl enable hermes-audio-recorder.service
 ```
 
 ## Known issues / TODO list
