@@ -2,6 +2,8 @@
 
 [![Build status](https://api.travis-ci.com/koenvervloesem/hermes-audio-server.svg?branch=master)](https://travis-ci.com/koenvervloesem/hermes-audio-server) [![Maintainability](https://api.codeclimate.com/v1/badges/9ae3a46a15a85c8b44f3/maintainability)](https://codeclimate.com/github/koenvervloesem/hermes-audio-server/maintainability) [![Code quality](https://api.codacy.com/project/badge/Grade/02647c1d9d214b8a97ed124ccf48839f)](https://www.codacy.com/app/koenvervloesem/hermes-audio-server) [![Python versions](https://img.shields.io/badge/python-3.5|3.6|3.7-blue.svg)](https://www.python.org) [![PyPI package version](https://img.shields.io/pypi/v/hermes-audio-server.svg)](https://pypi.python.org/pypi/hermes-audio-server) [![GitHub license](https://img.shields.io/github/license/koenvervloesem/hermes-audio-server.svg)](https://github.com/koenvervloesem/hermes-audio-server/blob/master/LICENSE)
 
+**Important information: I consider Hermes Audio Server deprecated now that Rhasspy has been modularized. I recommend to use [rhasspy-speakers-cli-hermes](https://github.com/rhasspy/rhasspy-speakers-cli-hermes) and [rhasspy-microphone-cli-hermes](https://github.com/rhasspy/rhasspy-microphone-cli-hermes) instead.**
+
 Hermes Audio server implements the audio server part of the [Hermes protocol](https://docs.snips.ai/reference/hermes) defined by [Snips](http://snips.ai).
 
 It's meant to be used with [Rhasspy](https://rhasspy.readthedocs.io), an offline, multilingual voice assistant toolkit that works with [Home Assistant](https://www.home-assistant.io) and is completely open source.
